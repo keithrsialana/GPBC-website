@@ -11,7 +11,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Header />
+    <div style={{minHeight: "80vh"}}>
       <App />
+    </div>
     <Footer />
   </BrowserRouter>
 )
