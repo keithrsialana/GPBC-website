@@ -1,15 +1,17 @@
-import { right } from "@popperjs/core";
 import NavItem from "./nav-item";
 import { Link } from "react-router-dom";
 
 function NavBar() {
 	return (
-		<nav className="navbar navbar-expand-lg navbar-dark justify-content-end" style={{width:"100%"}}>
+		<nav
+			className="navbar navbar-expand-lg navbar-dark justify-content-end"
+			style={{ width: "100%" }}
+		>
 			<button
 				className="navbar-toggler"
 				type="button"
-				data-toggle="collapse"
-				data-target="#navbarSupportedContent"
+				data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent"
 				aria-controls="navbarSupportedContent"
 				aria-expanded="false"
 				aria-label="Toggle navigation"
@@ -17,13 +19,16 @@ function NavBar() {
 				<span className="navbar-toggler-icon"></span>
 			</button>
 
-			<div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-				<ul className="navbar-nav mr-auto">
+			<div
+				className="collapse navbar-collapse justify-content-end"
+				id="navbarSupportedContent"
+			>
+				<ul className="navbar-nav mr-auto rounded">
 					<li className="nav-item">
 						<NavItem name="Home" path={"/"} />
 					</li>
 					<li className="nav-item">
-						<NavItem name="Schedules" path={"/schedules"} />
+						<NavItem name="Schedule" path={"/schedule"} />
 					</li>
 					<li className="nav-item">
 						<NavItem name="Statistics" path={"/statistics"} />
@@ -34,7 +39,7 @@ function NavBar() {
 					<li className="nav-item">
 						<NavItem name="About Us" path={"/about"} />
 					</li>
-					<li className="nav-item">
+					<li className="nav-item ml-1">
 						<Link to="/login">
 							<button type="button" className="btn btn-primary">
 								Admin Login

@@ -4,7 +4,7 @@ function Schedules() {
 
 	return (
 		<>
-			<h1>Schedules</h1>
+			<h1>Schedule</h1>
 		</>
 	);
 }

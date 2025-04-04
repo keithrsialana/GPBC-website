@@ -10,7 +10,7 @@
   border-color: var(--bs-primary) !important;
 }
 .btn-outline-primary {
-  border-color: #282536 !important;
+  border-color: transparent !important;
   font-weight: bolder;
   font-size: 1.1em;
   color: var(--bs-primary) !important;
@@ -28,6 +28,8 @@ body {
   background-color: #282536;
 }
 
-@media (max-width: 812px) {
-  /* Add styles here */
+@media (max-width: 990px) {
+  .navbar-nav {
+    background-color: #1b1827;
+  }
 }
