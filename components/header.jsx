@@ -4,26 +4,24 @@ import NavBar from "./page-components/NavBar";
 function Header() {
 	return (
 		<div
-			className="d-flex align-items-center"
+			className="d-flex align-items-center container-fluid"
 			style={{
-				display: "flex",
 				height: "100px",
-				width: "auto",
+                width: "100%"
 			}}
 		>
-			<div className="col-5" style={{ height: "100%" }}>
+			<div style={{ height: "100%"}}>
 				<img
 					src="Logo.png"
 					alt="GPBC Logo"
 					style={{ objectFit: "contain", height: "100%", width: "100%" }}
 				/>
 			</div>
-			<div className="col-1"></div>
 			<div
-				className="col-6 flex-container"
-				style={{ display: "flex", height: "40%" }}
+                className="container-flex"
+				style={{ display: "flex", height: "40%", width:"100%" }}
 			>
-				<NavBar />
+				<NavBar/>
 			</div>
 		</div>
 	);

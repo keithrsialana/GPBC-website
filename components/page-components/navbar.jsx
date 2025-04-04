@@ -1,9 +1,10 @@
+import { right } from "@popperjs/core";
 import NavItem from "./nav-item";
 import { Link } from "react-router-dom";
 
 function NavBar() {
 	return (
-		<nav className="navbar navbar-expand-lg navbar-dark">
+		<nav className="navbar navbar-expand-lg navbar-dark justify-content-end" style={{width:"100%"}}>
 			<button
 				className="navbar-toggler"
 				type="button"
@@ -16,7 +17,7 @@ function NavBar() {
 				<span className="navbar-toggler-icon"></span>
 			</button>
 
-			<div className="collapse navbar-collapse" id="navbarSupportedContent">
+			<div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
 				<ul className="navbar-nav mr-auto">
 					<li className="nav-item">
 						<NavItem name="Home" path={"/"} />
@@ -43,13 +44,6 @@ function NavBar() {
 				</ul>
 			</div>
 		</nav>
-		// <div className="flex-container" style={{display: 'flex', flexDirection: 'row'}}>
-		//
-		//
-		//
-		//
-		//
-		// </div>
 	);
 }
 
