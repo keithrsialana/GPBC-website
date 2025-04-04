@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./App.css";
 import Home from "../components/pages/home";
 import Error from "../components/pages/error";
 import About from "../components/pages/about";

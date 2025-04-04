@@ -1,39 +1,114 @@
-
 :root {
-  --bs-primary: #FF4057 !important;
-  --text: #DCDCDC;
-  background-color: #282536;
+	--bs-primary: #ff4057 !important;
+	--text: #dcdcdc;
+	background-color: #282536;
+	text-align: center;
+}
+
+.catchphrase {
+	font-size: 3rem;
+	color: var(--bs-primary) !important;
+	font-weight: bolder;
+}
+
+.contentmargin {
+	margin-left: auto;
+	margin-right: auto;
+	width: 86%;
+}
+
+.covercontainer {
+	position: relative;
+	max-height: 600px;
+	overflow: hidden;
+}
+
+.covercontainer .overlay {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.covercontainer img {
+  position:relative;
+	filter: brightness(0.4);
+	width: 100%;
+	object-fit: cover;
+	object-position: center;
 }
 
 .btn-primary {
-  background-color: var(--bs-primary) !important;
-  border-color: var(--bs-primary) !important;
+	background-color: var(--bs-primary) !important;
+	border-color: var(--bs-primary) !important;
 }
 .btn-outline-primary {
-  border-color: transparent !important;
-  font-weight: bolder;
-  font-size: 1.1em;
-  color: var(--bs-primary) !important;
+	border-color: transparent !important;
+	font-weight: bolder;
+	font-size: 1.1em;
+	color: var(--bs-primary) !important;
 }
 .btn-outline-primary:hover {
-  background-color: var(--bs-primary) !important;
-  color: var(--text) !important;
+	background-color: var(--bs-primary) !important;
+	color: var(--text) !important;
 }
 
-p, h1, h2, h3, h4, h5 ,h6 {
-  color: #DCDCDC !important;
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #dcdcdc !important;
+}
+
+h1, h2{
+  font-weight: bolder;
 }
 
 body {
-  background-color: #282536;
+	background-color: #282536;
 }
 
 footer {
-  background-color: #1b1827;
+	background-color: #1b1827;
+}
+
+@media (max-width: 273px) {
+	.catchphrase {
+		font-size: 1.5em;
+	}
+}
+
+@media (max-width: 410px) {
+	.catchphrase {
+		font-size: 2em;
+	}
 }
 
 @media (max-width: 990px) {
-  .navbar-nav {
-    background-color: #1b1827;
+	.navbar-nav {
+		background-color: #1b1827;
+	}
+}
+
+@media (min-width: 1051px) {
+  .covercontainer img {
+    top: -50px;
   }
 }
+
+@media (min-width: 1319px) {
+  .covercontainer img {
+    top: -100px;
+  }
+}
+
+@media (min-width: 1900px) {
+  .covercontainer img {
+    top: -250px;
+  }
+}
+
+
