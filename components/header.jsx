@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import NavBar from "./page-components/NavBar";
+import NavBar from "./page-components/navbar";
 
 function Header() {
 	return (
