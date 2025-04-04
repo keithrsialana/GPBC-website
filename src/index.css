@@ -10,7 +10,9 @@
   border-color: var(--bs-primary) !important;
 }
 .btn-outline-primary {
-  border-color: var(--bs-primary) !important;
+  border-color: #282536 !important;
+  font-weight: bolder;
+  font-size: 1.1em;
   color: var(--bs-primary) !important;
 }
 .btn-outline-primary:hover {
@@ -18,11 +20,14 @@
   color: var(--text) !important;
 }
 
-
 p, h1, h2, h3, h4, h5 ,h6 {
   color: #DCDCDC !important;
 }
 
 body {
   background-color: #282536;
+}
+
+@media (max-width: 812px) {
+  /* Add styles here */
 }

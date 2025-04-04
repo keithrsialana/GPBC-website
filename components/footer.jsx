@@ -1,6 +1,6 @@
 
 function Footer() {
-    return (<>GPBC © 2025</>);
+    return (<p>GPBC © 2025</p>);
 }
 
 export default Footer;
