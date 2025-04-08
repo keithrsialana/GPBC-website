@@ -7,6 +7,11 @@ const localizer = momentLocalizer(moment);
 // Year, Month, Day, Hour, Minute
 // January starts at 0
 const events = [
+	{
+		title: "Season 2 Tip-Off",
+		start: new Date(2025, 4, 3, 9, 0),
+		end: new Date(2025, 4, 3, 17, 0)
+	}
 	// {
 	// 	title: "Birthday",
 	// 	start: new Date(2025, 3, 4, 0, 0),
