@@ -10,7 +10,7 @@ function Home() {
 
 			<h5>Currently, the club is run by JM Relampag and Kurt Sialana</h5>
 			<h5>The relaunched club's first season started in (Insert Date) with great success, and the team is looking forward to more exciting seasons to come!</h5>
-			<img src="about.png" alt="A photo of JM and Kurt" style={{maxWidth: "50%", marginBottom: "20px", marginTop: "20px"}} className="rounded"/>
+			<img src="3E271E67-7C0B-4125-AFE5-4BC107D4C922.jpg" alt="A photo of JM and Kurt" style={{maxWidth: "50%", marginBottom: "20px", marginTop: "20px"}} className="rounded"/>
 		</div>
 	);
 }
