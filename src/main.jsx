@@ -2,6 +2,8 @@ import { BrowserRouter } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./index.css";
+import "./animations.css";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 import App from "./App.jsx";
 import ReactDOM from "react-dom/client";
 import Header from "../components/header";

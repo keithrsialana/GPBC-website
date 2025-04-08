@@ -7,6 +7,7 @@ function Header() {
 			className="d-flex align-items-center container-fluid contentmargin"
 			style={{
 				height: "100px",
+				padding: "10px 0"
 			}}
 		>
 			<div style={{ height: "100%" }}>

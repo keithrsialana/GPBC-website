@@ -5,6 +5,19 @@
 	text-align: center;
 }
 
+.rbc-toolbar button {
+	color: var(--text) !important;
+}
+.rbc-toolbar button:hover {
+	color: #1B1827 !important;
+}
+.rbc-today {
+	background-color: #282536 !important;
+}
+.rbc-toolbar .rbc-active{
+	color: #1B1827 !important;
+}
+
 .catchphrase {
 	font-size: 3rem;
 	color: var(--bs-primary) !important;
@@ -31,7 +44,7 @@
 }
 
 .covercontainer img {
-  position:relative;
+	position: relative;
 	filter: brightness(0.4);
 	width: 100%;
 	object-fit: cover;
@@ -63,11 +76,12 @@ h6 {
 }
 
 h1 {
-  color: var(--bs-primary) !important;
+	color: var(--bs-primary) !important;
 }
 
-h1, h2{
-  font-weight: bolder;
+h1,
+h2 {
+	font-weight: bolder;
 }
 
 body {
@@ -97,21 +111,19 @@ footer {
 }
 
 @media (min-width: 1051px) {
-  .covercontainer img {
-    top: -50px;
-  }
+	.covercontainer img {
+		top: -50px;
+	}
 }
 
 @media (min-width: 1319px) {
-  .covercontainer img {
-    top: -100px;
-  }
+	.covercontainer img {
+		top: -100px;
+	}
 }
 
 @media (min-width: 1900px) {
-  .covercontainer img {
-    top: -250px;
-  }
+	.covercontainer img {
+		top: -250px;
+	}
 }
-
-
