@@ -7,7 +7,6 @@ function Home() {
 	const [animates, setAnimates] = useState([
 		{ id: 1, image: "Untitled_design.png", alt: "Animate 1" },
 		{ id: 2, image: "cover2.png", alt: "Animate 2" },
-		{ id: 3, image: "jm_kurt.png", alt: "Animate 3" },
 	]);
 	
 	// for image carousel
