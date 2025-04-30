@@ -4,7 +4,7 @@ import NavBar from "./page-components/navbar";
 function Header() {
 	return (
 		<div
-			className="d-flex align-items-center container-fluid contentmargin"
+			className="d-flex align-items-center container-fluid contentmargin mt-2"
 			style={{
 				height: "100px",
 				padding: "10px 0"
