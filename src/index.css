@@ -8,14 +8,24 @@
 .rbc-toolbar button {
 	color: var(--text) !important;
 }
+
 .rbc-toolbar button:hover {
 	color: #1B1827 !important;
 }
+
 .rbc-today {
 	background-color: #282536 !important;
 }
-.rbc-toolbar .rbc-active{
+
+.rbc-toolbar .rbc-active {
 	color: #1B1827 !important;
+}
+
+.card-down {
+	background: linear-gradient(to bottom, #2f2b3e 80%, rgba(247, 247, 247, 0));
+	border: none;
+	border-radius: 1em;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 8px 20px 0px;
 }
 
 .catchphrase {
@@ -55,12 +65,14 @@
 	background-color: var(--bs-primary) !important;
 	border-color: var(--bs-primary) !important;
 }
+
 .btn-outline-primary {
 	border-color: transparent !important;
 	font-weight: bolder;
 	font-size: 1.1em;
 	color: var(--bs-primary) !important;
 }
+
 .btn-outline-primary:hover {
 	background-color: var(--bs-primary) !important;
 	color: var(--text) !important;
