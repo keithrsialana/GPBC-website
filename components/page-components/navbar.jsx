@@ -1,7 +1,13 @@
 import NavItem from "./nav-item";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../src/contexts/AuthContext";
+
+import AdminCanvas from "./AdminCanvas";
 
 function NavBar() {
+
+	const { currentUser } = useAuth();
+
 	return (
 		<nav
 			className="navbar navbar-expand-lg navbar-dark justify-content-end"
@@ -40,11 +46,17 @@ function NavBar() {
 						<NavItem name="About Us" path={"/about"} />
 					</li>
 					<li className="nav-item ml-1">
-						<Link to="/login">
-							<button type="button" className="btn btn-primary">
-								Admin Login
-							</button>
-						</Link>
+						{currentUser ? (
+							<>
+								<AdminCanvas />
+							</>
+						) : (
+							<Link to="/login">
+								<button type="button" className="btn btn-primary">
+									Admin Login
+								</button>
+							</Link>
+						)}
 					</li>
 				</ul>
 			</div>
