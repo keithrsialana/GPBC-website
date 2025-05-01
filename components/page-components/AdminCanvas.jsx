@@ -58,7 +58,7 @@ function AdminCanvas() {
                             <Accordion.Body>
                                 <ul className="navbar-nav">
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-dashboard-users"><TfiAnnouncement/> Announcements</Link>
+                                        <Link className="nav-link custom-link text-start" to="/admin-announcements"><TfiAnnouncement/> Announcements</Link>
                                     </li>
                                     <li className="nav-item">
                                         <Link className="nav-link custom-link text-start" to="/admin-dashboard-tickets-purchased"><GrSchedule /> Schedule</Link>
