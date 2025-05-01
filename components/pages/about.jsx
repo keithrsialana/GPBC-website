@@ -14,11 +14,11 @@ function about() {
 		<div className='container-fluid p-0'>
 			<div className="jumbotron text-center">
 				<h1 className="">About Us</h1>
-				<p className="lead">GPBC</p>
-				<hr className="my-4" />
+				<p className="lead">Guelph Pinoy Basketball Club</p>
 			</div>
 
 			<div className='container mt-3'>
+				<hr className="my-4 border-white" />
 				<div className="row align-items-md-stretch mt-5 mb-5">
 					<div className="col-md-6">
 						<div className="h-100 p-5 text-bg-dark rounded-3">

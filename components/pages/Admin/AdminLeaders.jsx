@@ -33,7 +33,7 @@ function AdminLeaders() {
 							}}>
 							<div className="admin-panel-section">
 								{/* Static header (replaces Accordion.Header) */}
-								<div className="admin-panel-header d-flex align-items-center mb-2 p-2">
+								<div className="admin-panel-header d-flex justify-content-center align-items-center mb-2 p-2">
 									<span className="me-2">📋</span>
 									<h5 className="m-0">Manage</h5>
 								</div>
