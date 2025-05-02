@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import Card from 'react-bootstrap/Card';
-import Nav from 'react-bootstrap/Nav';
-import Accordion from 'react-bootstrap/Accordion';
 import { FaUsers } from 'react-icons/fa';
 import { MdOutlineLeaderboard, MdLeaderboard } from "react-icons/md";
 import { TfiAnnouncement } from "react-icons/tfi";
@@ -12,6 +10,23 @@ import { GiBasketballJersey } from "react-icons/gi";
 import { RiFileAddLine } from "react-icons/ri";
 
 function AdminAnnouncements() {
+
+	// Fetch announcements from Firebase
+	useEffect(() => {
+		async function fetchAnnouncements() {
+			try {
+				const snapshot = await getDocs(collection(db, "announcements"));
+				const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+				setAnnouncements(data);
+			} catch (error) {
+				console.error("Error fetching announcements:", error);
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		fetchAnnouncements();
+	}, []);
 
 	return (
 		<div className="container-fluid p-0">
@@ -79,7 +94,7 @@ function AdminAnnouncements() {
 						<Card>
 							<Card.Header>
 								<h1>Announcements</h1>
-								<Link className="nav-link custom-link text-start" to="/admin-add-announcements">
+								<Link className="nav-link custom-link text-start" to="/admin-add-announcement">
 									<RiFileAddLine className="me-2 ms-2" /> Add Announcement
 								</Link>
 							</Card.Header>

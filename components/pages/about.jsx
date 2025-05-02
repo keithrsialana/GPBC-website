@@ -2,8 +2,6 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 
-import KS from "../../public/KS.jpg"
-import JM from "../../public/JM.jpg"
 import { FaFacebookSquare } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
@@ -31,7 +29,7 @@ function about() {
 							<div className='row justify-content-center mt-4' style={{ gap: "20px" }}>
 								<div className="col-auto text-center">
 									<img
-										src={KS}
+										src="KS.jpg"
 										alt="picture of Kurt Ronald Sialana"
 										style={{
 											width: "120px",
@@ -47,7 +45,7 @@ function about() {
 
 								<div className="col-auto text-center">
 									<img
-										src={JM}
+										src="JM.jpg"
 										alt="picture of Jan Michael Relampagos"
 										style={{
 											width: "120px",
