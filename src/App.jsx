@@ -13,6 +13,7 @@ import AdminPlayers from "../components/pages/Admin/AdminPlayers";
 import AdminStandings from "../components/pages/Admin/AdminStandings";
 import AdminLeaders from "../components/pages/Admin/AdminLeaders";
 import AddAnnouncement from "../components/pages/Admin/CRUD/AddAnnouncement";
+import AddSchedule from "../components/pages/Admin/CRUD/AddSchedule";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
 				<Route path="/admin-standings" element={<AdminStandings />} />
 				<Route path="/admin-leaders" element={<AdminLeaders />} />
 				<Route path="/admin-add-announcement" element={<AddAnnouncement />} />
+				<Route path="/admin-add-schedule" element={<AddSchedule />} />
 			</Routes>
 		</>
 	);

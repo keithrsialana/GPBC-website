@@ -61,19 +61,19 @@ function AdminCanvas() {
                                         <Link className="nav-link custom-link text-start" to="/admin-announcements"><TfiAnnouncement/> Announcements</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-dashboard-tickets-purchased"><GrSchedule /> Schedule</Link>
+                                        <Link className="nav-link custom-link text-start" to="/admin-schedule"><GrSchedule /> Schedule</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-dashboard-review-approval"><GiBasketballJersey /> Teams</Link>
+                                        <Link className="nav-link custom-link text-start" to="/admin-teams"><GiBasketballJersey /> Teams</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-dashboard-approved-reviews"><FaUsers /> Players</Link>
+                                        <Link className="nav-link custom-link text-start" to="/admin-players"><FaUsers /> Players</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-dashboard-approved-reviews"><MdOutlineLeaderboard /> Standings</Link>
+                                        <Link className="nav-link custom-link text-start" to="/admin-standings"><MdOutlineLeaderboard /> Standings</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-dashboard-approved-reviews"><MdLeaderboard /> Leaders</Link>
+                                        <Link className="nav-link custom-link text-start" to="/admin-leaders"><MdLeaderboard /> Leaders</Link>
                                     </li>
                                 </ul>
                             </Accordion.Body>

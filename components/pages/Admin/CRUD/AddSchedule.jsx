@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc } from "firebase/firestore";
-import { db } from "../../../src/services/firebase";
-
 import Card from 'react-bootstrap/Card';
 import Nav from 'react-bootstrap/Nav';
 import Accordion from 'react-bootstrap/Accordion';
@@ -12,29 +9,9 @@ import { MdOutlineLeaderboard, MdLeaderboard } from "react-icons/md";
 import { TfiAnnouncement } from "react-icons/tfi";
 import { GrSchedule } from "react-icons/gr";
 import { GiBasketballJersey } from "react-icons/gi";
-import { RiFileAddLine } from "react-icons/ri";
+import { FcCancel } from "react-icons/fc";
 
 function AdminSchedule() {
-	const [events, setEvents] = useState([]);
-
-	useEffect(() => {
-		const fetchEvents = async () => {
-			try {
-				const querySnapshot = await getDocs(collection(db, "events"));
-				const fetchedEvents = querySnapshot.docs.map(doc => ({
-					id: doc.id,
-					...doc.data(),
-					start: doc.data().start.toDate(), // Convert Firestore Timestamp to JS Date
-					end: doc.data().end.toDate(),
-				}));
-				setEvents(fetchedEvents);
-			} catch (error) {
-				console.error("Error fetching events:", error);
-			}
-		};
-
-		fetchEvents();
-	}, []);
 
 	return (
 		<div className="container-fluid p-0">
@@ -102,31 +79,12 @@ function AdminSchedule() {
 						<Card>
 							<Card.Header>
 								<h1>Schedule</h1>
-								<Link className="nav-link custom-link text-start" to="/admin-add-schedule">
-									<RiFileAddLine className="me-2 ms-2" /> Add Schedule
+                                <Link className="nav-link custom-link text-start" to="/admin-schedule">
+									<FcCancel className="me-2 ms-2" />Cancel Add Schedule
 								</Link>
 							</Card.Header>
 							<Card.Body>
-								{/* Display a list of schedule events here from firestore */}
-								{events.length > 0 ? (
-									<ul className="list-group">
-										{events.map(event => (
-											<li key={event.id} className="list-group-item d-flex justify-content-between align-items-center">
-												<div>
-													<strong>{event.title}</strong><br />
-													<small>
-														{event.start.toLocaleString()} → {event.end.toLocaleString()}
-													</small>
-												</div>
-												<Link to={`/admin-edit-schedule/${event.id}`} className="btn btn-sm btn-outline-primary">
-													Edit
-												</Link>
-											</li>
-										))}
-									</ul>
-								) : (
-									<p>No events found.</p>
-								)}
+								
 							</Card.Body>
 						</Card>
 					</div>
