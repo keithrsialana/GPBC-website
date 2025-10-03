@@ -30,7 +30,7 @@ function Schedules() {
 			<div
 				className="row rounded"
 				style={{
-					maxWidth: "80vw",
+					// maxWidth: "80vw",
 					backgroundColor: "#1B1827",
 					padding: "10px 10px",
 					color: "#DCDCDC",
