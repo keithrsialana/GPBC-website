@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { db } from "../../../src/services/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 import Card from 'react-bootstrap/Card';
 import { FaUsers } from 'react-icons/fa';
@@ -11,22 +13,46 @@ import { RiFileAddLine } from "react-icons/ri";
 
 function AdminAnnouncements() {
 
-	// Fetch announcements from Firebase
-	useEffect(() => {
-		async function fetchAnnouncements() {
-			try {
-				const snapshot = await getDocs(collection(db, "announcements"));
-				const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-				setAnnouncements(data);
-			} catch (error) {
-				console.error("Error fetching announcements:", error);
-			} finally {
-				setLoading(false);
-			}
-		}
+	const [announcements, setAnnouncements] = useState([]);
+  const [loading, setLoading] = useState(true); // ✅ You were missing this
 
-		fetchAnnouncements();
-	}, []);
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "announcements")); // ✅ getDocs import needed
+        const fetchedAnnouncements = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+		}));
+        setAnnouncements(fetchedAnnouncements);
+      } catch (error) {
+        console.error("Error fetching announcements:", error);
+      } finally {
+        setLoading(false); // ✅ You were missing setLoading state
+      }
+    };
+
+    fetchAnnouncements();
+  }, []);
+
+  if (loading) return <p>Loading announcements...</p>;
+
+	// Fetch announcements from Firebase
+	// useEffect(() => {
+	// 	async function fetchAnnouncements() {
+	// 		try {
+	// 			const snapshot = await getDocs(collection(db, "announcements"));
+	// 			const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+	// 			setAnnouncements(data);
+	// 		} catch (error) {
+	// 			console.error("Error fetching announcements:", error);
+	// 		} finally {
+	// 			setLoading(false);
+	// 		}
+	// 	}
+
+	// 	fetchAnnouncements();
+	// }, []);
 
 	return (
 		<div className="container-fluid p-0">
@@ -99,7 +125,26 @@ function AdminAnnouncements() {
 								</Link>
 							</Card.Header>
 							<Card.Body>
-
+								<div>
+									{announcements.length === 0 ? (
+										<p>No announcements found</p>
+									) : (
+										announcements.map((announcement) => (
+											<div key={announcement.id} className="list-group-item d-flex justify-content-between align-items-center">
+												{announcement.imageUrl && (
+													<img src={announcement.imageUrl} alt={announcement.title} width="100" />
+												)}
+												<div>
+													<h3>{announcement.title}</h3>
+													<p>{announcement.body}</p>
+												</div>
+												<Link to={`/admin-edit-announcement/${announcement.id}`} className="btn btn-sm btn-outline-primary">
+													Edit
+												</Link>
+											</div>
+										))
+									)}
+								</div>
 							</Card.Body>
 						</Card>
 					</div>
