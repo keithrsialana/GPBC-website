@@ -5,7 +5,7 @@ import { collection, getDocs } from "firebase/firestore";
 
 import Card from 'react-bootstrap/Card';
 import { FaUsers } from 'react-icons/fa';
-import { MdOutlineLeaderboard, MdLeaderboard } from "react-icons/md";
+import { MdOutlineLeaderboard, MdLeaderboard, MdDelete, MdEditNote } from "react-icons/md";
 import { TfiAnnouncement } from "react-icons/tfi";
 import { GrSchedule } from "react-icons/gr";
 import { GiBasketballJersey } from "react-icons/gi";
@@ -14,28 +14,28 @@ import { RiFileAddLine } from "react-icons/ri";
 function AdminAnnouncements() {
 
 	const [announcements, setAnnouncements] = useState([]);
-  const [loading, setLoading] = useState(true); // ✅ You were missing this
+	const [loading, setLoading] = useState(true); // ✅ You were missing this
 
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "announcements")); // ✅ getDocs import needed
-        const fetchedAnnouncements = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-		}));
-        setAnnouncements(fetchedAnnouncements);
-      } catch (error) {
-        console.error("Error fetching announcements:", error);
-      } finally {
-        setLoading(false); // ✅ You were missing setLoading state
-      }
-    };
+	useEffect(() => {
+		const fetchAnnouncements = async () => {
+			try {
+				const querySnapshot = await getDocs(collection(db, "announcements")); // ✅ getDocs import needed
+				const fetchedAnnouncements = querySnapshot.docs.map(doc => ({
+					id: doc.id,
+					...doc.data(),
+				}));
+				setAnnouncements(fetchedAnnouncements);
+			} catch (error) {
+				console.error("Error fetching announcements:", error);
+			} finally {
+				setLoading(false); // ✅ You were missing setLoading state
+			}
+		};
 
-    fetchAnnouncements();
-  }, []);
+		fetchAnnouncements();
+	}, []);
 
-  if (loading) return <p>Loading announcements...</p>;
+	if (loading) return <p>Loading announcements...</p>;
 
 	// Fetch announcements from Firebase
 	// useEffect(() => {
@@ -124,28 +124,72 @@ function AdminAnnouncements() {
 									<RiFileAddLine className="me-2 ms-2" /> Add Announcement
 								</Link>
 							</Card.Header>
-							<Card.Body>
-								<div>
-									{announcements.length === 0 ? (
-										<p>No announcements found</p>
-									) : (
-										announcements.map((announcement) => (
-											<div key={announcement.id} className="list-group-item d-flex justify-content-between align-items-center">
-												{announcement.imageUrl && (
-													<img src={announcement.imageUrl} alt={announcement.title} width="100" />
-												)}
-												<div>
-													<h3>{announcement.title}</h3>
-													<p>{announcement.body}</p>
+							<Card.Body className="text-start">
+								{announcements.length === 0 ? (
+									<p className="text-muted text-center">No announcements found</p>
+								) : (
+									<div className="list-group">
+										{announcements.map((announcement) => (
+											<div
+												key={announcement.id}
+												className="list-group-item d-flex align-items-start justify-content-between"
+											>
+												{/* LEFT SIDE - Image + Text */}
+												<div className="d-flex align-items-center flex-grow-1">
+													{announcement.imageUrl && (
+														<img
+															src={announcement.imageUrl}
+															alt={announcement.title}
+															style={{
+																width: "80px",
+																height: "80px",
+																objectFit: "cover",
+																borderRadius: "6px",
+																marginRight: "15px",
+															}}
+														/>
+													)}
+
+													{/* TEXT CONTENT */}
+													<div className="flex-grow-1">
+														<h5 className="mb-1 fw-bold text-dark">{announcement.title}</h5>
+														<p className="mb-2 text-muted" style={{ maxWidth: "600px" }}>
+															{announcement.body.length > 150
+																? `${announcement.body.substring(0, 150)}...`
+																: announcement.body}
+														</p>
+														<small className="text-secondary">
+															{announcement.date
+																? new Date(announcement.date).toLocaleDateString()
+																: ""}
+														</small>
+													</div>
 												</div>
-												<Link to={`/admin-edit-announcement/${announcement.id}`} className="btn btn-sm btn-outline-primary">
-													Edit
-												</Link>
+
+												{/* RIGHT SIDE - ACTION BUTTONS */}
+												<div className="d-flex align-items-center gap-2">
+													<Link
+														to={`/admin-edit-announcement/${announcement.id}`}
+														className="btn btn-outline-success btn-sm"
+														title="Edit"
+													>
+														<MdEditNote size={20} />
+													</Link>
+
+													<button
+														className="btn btn-outline-danger btn-sm"
+														title="Delete"
+														onClick={() => handleDelete(announcement.id)}
+													>
+														<MdDelete size={20} />
+													</button>
+												</div>
 											</div>
-										))
-									)}
-								</div>
+										))}
+									</div>
+								)}
 							</Card.Body>
+
 						</Card>
 					</div>
 				</div>
