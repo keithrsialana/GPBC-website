@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { db } from "../../../../src/services/firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -17,14 +17,18 @@ function AddAnnouncement() {
 	const [body, setBody] = useState("");
 	const [imageFile, setImageFile] = useState(null);
 	const storage = getStorage();
+	const navigate = useNavigate();
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		try {
 			let imageUrl = "";
+			let storagePath = "";
+
 			if (imageFile) {
-				const storageRef = ref(storage, `announcements/${Date.now()}-${imageFile.name}`);
+				storagePath = `announcements/${Date.now()}-${imageFile.name}`;
+				const storageRef = ref(storage, storagePath);
 				await uploadBytes(storageRef, imageFile);
 				imageUrl = await getDownloadURL(storageRef);
 			}
@@ -33,17 +37,20 @@ function AddAnnouncement() {
 				title,
 				body,
 				imageUrl,
-				date: new Date().toISOString()
+				storagePath,
+				date: new Date().toISOString(),
 			});
 
 			setTitle("");
 			setBody("");
 			setImageFile(null);
 			alert("Announcement added!");
+			navigate("/admin-announcements");
 		} catch (error) {
 			alert("Error: " + error.message);
 		}
 	};
+
 
 	return (
 		<div className="container-fluid p-0">

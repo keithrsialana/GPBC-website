@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { db } from "../../../src/services/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { db, storage } from "../../../src/services/firebase";
+import { ref, deleteObject } from "firebase/storage";
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
 
 import Card from 'react-bootstrap/Card';
 import { FaUsers } from 'react-icons/fa';
@@ -37,22 +38,33 @@ function AdminAnnouncements() {
 
 	if (loading) return <p>Loading announcements...</p>;
 
-	// Fetch announcements from Firebase
-	// useEffect(() => {
-	// 	async function fetchAnnouncements() {
-	// 		try {
-	// 			const snapshot = await getDocs(collection(db, "announcements"));
-	// 			const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-	// 			setAnnouncements(data);
-	// 		} catch (error) {
-	// 			console.error("Error fetching announcements:", error);
-	// 		} finally {
-	// 			setLoading(false);
-	// 		}
-	// 	}
+	const handleDelete = async (announcementId) => {
+		const confirmDelete = window.confirm("Are you sure you want to delete this announcement?");
+		if (!confirmDelete) return;
 
-	// 	fetchAnnouncements();
-	// }, []);
+		try {
+			// Find the announcement to get its image URL
+			const announcement = announcements.find(a => a.id === announcementId);
+
+			// Delete the Firestore document
+			await deleteDoc(doc(db, "announcements", announcementId));
+
+			// If there is an image, delete it from Firebase Storage
+			if (announcement.imageUrl) {
+				const imageRef = ref(storage, announcement.imageUrl);
+				// This will work if imageUrl is the full path from storage; otherwise, store the path separately
+				await deleteObject(imageRef).catch(err => console.log("Image delete error:", err));
+			}
+
+			// Remove from local state so UI updates immediately
+			setAnnouncements(prev => prev.filter(a => a.id !== announcementId));
+
+			alert("Announcement deleted successfully!");
+		} catch (error) {
+			console.error("Error deleting announcement:", error);
+			alert("Failed to delete announcement.");
+		}
+	};
 
 	return (
 		<div className="container-fluid p-0">
