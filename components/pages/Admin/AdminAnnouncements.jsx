@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { db } from "../../../src/services/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { db, storage } from "../../../src/services/firebase";
+import { ref, deleteObject } from "firebase/storage";
+import { collection, getDocs, doc, deleteDoc, query, orderBy } from "firebase/firestore";
 
 import Card from 'react-bootstrap/Card';
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import { FaUsers } from 'react-icons/fa';
 import { MdOutlineLeaderboard, MdLeaderboard, MdDelete, MdEditNote } from "react-icons/md";
 import { TfiAnnouncement } from "react-icons/tfi";
@@ -14,45 +17,75 @@ import { RiFileAddLine } from "react-icons/ri";
 function AdminAnnouncements() {
 
 	const [announcements, setAnnouncements] = useState([]);
-	const [loading, setLoading] = useState(true); // ✅ You were missing this
+	const [loading, setLoading] = useState(true);
+
+	// Modal state
+	const [modalShow, setModalShow] = useState(false);
+	const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
 
 	useEffect(() => {
-		const fetchAnnouncements = async () => {
+		async function fetchAnnouncements() {
 			try {
-				const querySnapshot = await getDocs(collection(db, "announcements")); // ✅ getDocs import needed
-				const fetchedAnnouncements = querySnapshot.docs.map(doc => ({
+				const announcementsQuery = query(
+					collection(db, "announcements"),
+					orderBy("createdAt", "desc") // ✅ Sort by date (newest first)
+				);
+
+				const snapshot = await getDocs(announcementsQuery);
+				const data = snapshot.docs.map(doc => ({
 					id: doc.id,
 					...doc.data(),
 				}));
-				setAnnouncements(fetchedAnnouncements);
+				setAnnouncements(data);
 			} catch (error) {
 				console.error("Error fetching announcements:", error);
 			} finally {
-				setLoading(false); // ✅ You were missing setLoading state
+				setLoading(false);
 			}
-		};
+		}
 
 		fetchAnnouncements();
 	}, []);
 
 	if (loading) return <p>Loading announcements...</p>;
 
-	// Fetch announcements from Firebase
-	// useEffect(() => {
-	// 	async function fetchAnnouncements() {
-	// 		try {
-	// 			const snapshot = await getDocs(collection(db, "announcements"));
-	// 			const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-	// 			setAnnouncements(data);
-	// 		} catch (error) {
-	// 			console.error("Error fetching announcements:", error);
-	// 		} finally {
-	// 			setLoading(false);
-	// 		}
-	// 	}
+	const handleDelete = async (announcementId) => {
+		const confirmDelete = window.confirm("Are you sure you want to delete this announcement?");
+		if (!confirmDelete) return;
 
-	// 	fetchAnnouncements();
-	// }, []);
+		try {
+			// Find the announcement to get its image URL
+			const announcement = announcements.find(a => a.id === announcementId);
+
+			// Delete the Firestore document
+			await deleteDoc(doc(db, "announcements", announcementId));
+
+			// If there is an image, delete it from Firebase Storage
+			if (announcement.imageUrl) {
+				const imageRef = ref(storage, announcement.imageUrl);
+				// This will work if imageUrl is the full path from storage; otherwise, store the path separately
+				await deleteObject(imageRef).catch(err => console.log("Image delete error:", err));
+			}
+
+			// Remove from local state so UI updates immediately
+			setAnnouncements(prev => prev.filter(a => a.id !== announcementId));
+
+			alert("Announcement deleted successfully!");
+		} catch (error) {
+			console.error("Error deleting announcement:", error);
+			alert("Failed to delete announcement.");
+		}
+	};
+
+	const openModal = (announcement) => {
+		setSelectedAnnouncement(announcement);
+		setModalShow(true);
+	};
+
+	const closeModal = () => {
+		setSelectedAnnouncement(null);
+		setModalShow(false);
+	};
 
 	return (
 		<div className="container-fluid p-0">
@@ -133,6 +166,7 @@ function AdminAnnouncements() {
 											<div
 												key={announcement.id}
 												className="list-group-item d-flex align-items-start justify-content-between"
+												onClick={() => openModal(announcement)}
 											>
 												{/* LEFT SIDE - Image + Text */}
 												<div className="d-flex align-items-center flex-grow-1">
@@ -158,10 +192,14 @@ function AdminAnnouncements() {
 																? `${announcement.body.substring(0, 150)}...`
 																: announcement.body}
 														</p>
-														<small className="text-secondary">
+														<small className="text-muted ms-auto">
 															{announcement.date
-																? new Date(announcement.date).toLocaleDateString()
-																: ""}
+																? new Date(announcement.date).toLocaleDateString("en-US", {
+																	year: "numeric",
+																	month: "short",
+																	day: "numeric",
+																})
+																: "Just now"}
 														</small>
 													</div>
 												</div>
@@ -188,6 +226,26 @@ function AdminAnnouncements() {
 										))}
 									</div>
 								)}
+
+								{/* Modal */}
+								<Modal show={modalShow} onHide={closeModal} centered>
+									<Modal.Header closeButton>
+										<Modal.Title>{selectedAnnouncement?.title}</Modal.Title>
+									</Modal.Header>
+									<Modal.Body>
+										<p className="text-dark">{selectedAnnouncement?.body}</p>
+										{selectedAnnouncement?.imageUrl && (
+											<img
+												src={selectedAnnouncement.imageUrl}
+												alt="Announcement"
+												style={{ maxWidth: "100%", borderRadius: "8px" }}
+											/>
+										)}
+									</Modal.Body>
+									<Modal.Footer>
+										<Button variant="secondary" onClick={closeModal}>Close</Button>
+									</Modal.Footer>
+								</Modal>
 							</Card.Body>
 
 						</Card>

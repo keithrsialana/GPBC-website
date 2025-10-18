@@ -5,7 +5,6 @@ import { useAuth } from "../../src/contexts/AuthContext";
 import AdminCanvas from "./AdminCanvas";
 
 function NavBar() {
-
 	const { currentUser } = useAuth();
 
 	return (
@@ -46,17 +45,7 @@ function NavBar() {
 						<NavItem name="About Us" path={"/about"} />
 					</li>
 					<li className="nav-item ml-1">
-						{currentUser ? (
-							<>
-								<AdminCanvas />
-							</>
-						) : (
-							<Link to="/login">
-								<button type="button" className="btn btn-primary">
-									Admin Login
-								</button>
-							</Link>
-						)}
+						{currentUser && <AdminCanvas />}
 					</li>
 				</ul>
 			</div>

@@ -1,8 +1,12 @@
-function AnnouncementCard({ announcement }) {
+function AnnouncementCard({ announcement, onClick }) {
     if (!announcement) return null;
 
     return (
-        <div className="card mb-4 shadow-sm" style={{ maxWidth: "600px", margin: "0 auto" }}>
+        <div
+            className="card mb-4 shadow-sm"
+            style={{ maxWidth: "600px", margin: "0 auto", cursor: "pointer" }}
+            onClick={onClick} // ✅ Trigger modal open
+        >
             {/* Header */}
             <div className="card-header bg-white d-flex align-items-center">
                 <img
@@ -37,7 +41,13 @@ function AnnouncementCard({ announcement }) {
                 <p className="mb-1 text-dark">
                     <strong>{announcement.title}</strong>
                 </p>
-                <p className="mt-2 text-start text-dark">{announcement.body}</p>
+                {/* ✅ Truncate long body to preview */}
+                <p className="mt-2 text-start text-dark text-truncate" style={{ maxHeight: "60px", overflow: "hidden" }}>
+                    {announcement.body}
+                </p>
+                <span className="text-primary" style={{ fontSize: "14px" }}>
+                    View more...
+                </span>
             </div>
         </div>
     );

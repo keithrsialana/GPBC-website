@@ -13,6 +13,7 @@ import AdminPlayers from "../components/pages/Admin/AdminPlayers";
 import AdminStandings from "../components/pages/Admin/AdminStandings";
 import AdminLeaders from "../components/pages/Admin/AdminLeaders";
 import AddAnnouncement from "../components/pages/Admin/CRUD/AddAnnouncement";
+import EditAnnouncement from "../components/pages/Admin/CRUD/EditAnnouncement";
 import AddSchedule from "../components/pages/Admin/CRUD/AddSchedule";
 import { Routes, Route } from "react-router-dom";
 
@@ -25,7 +26,7 @@ function App() {
 				<Route path="/contact" element={<Contact />} />
 				<Route path="/schedule" element={<Schedules />} />
 				<Route path="/statistics" element={<Statistics />} />
-				<Route path="/login" element={<AdminLogin />} />
+				<Route path="/internal-portal-KRTS21-RICEKEET65-JM17-8f2a" element={<AdminLogin />} />
 				<Route path="*" element={<Error />} />
 				<Route path="/admin-announcements" element={<AdminAnnouncements />} />
 				<Route path="/admin-schedule" element={<AdminSchedule />} />
@@ -34,6 +35,7 @@ function App() {
 				<Route path="/admin-standings" element={<AdminStandings />} />
 				<Route path="/admin-leaders" element={<AdminLeaders />} />
 				<Route path="/admin-add-announcement" element={<AddAnnouncement />} />
+				<Route path="/admin-edit-announcement/:id" element={<EditAnnouncement />} />
 				<Route path="/admin-add-schedule" element={<AddSchedule />} />
 			</Routes>
 		</>
