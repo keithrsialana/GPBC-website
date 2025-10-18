@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { db } from "../../../../src/services/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import Card from 'react-bootstrap/Card';
@@ -39,6 +39,7 @@ function AddAnnouncement() {
 				imageUrl,
 				storagePath,
 				date: new Date().toISOString(),
+				createdAt: serverTimestamp(),
 			});
 
 			setTitle("");

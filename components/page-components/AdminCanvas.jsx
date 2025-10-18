@@ -43,7 +43,7 @@ function AdminCanvas() {
 
     return (
         <>
-            <Link className="nav-link" onClick={handleShow}>
+            <Link className="nav-link btn btn-outline-primary hovering-animation" onClick={handleShow} style= {{ color: "#ff4057" }}>
                 <MdOutlineAdminPanelSettings /> Admin Panel
             </Link>
 
@@ -58,22 +58,22 @@ function AdminCanvas() {
                             <Accordion.Body>
                                 <ul className="navbar-nav">
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-announcements"><TfiAnnouncement/> Announcements</Link>
+                                        <Link className="nav-link custom-link text-start bg-hover-lighter" to="/admin-announcements"><TfiAnnouncement/> Announcements</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-schedule"><GrSchedule /> Schedule</Link>
+                                        <Link className="nav-link custom-link text-start bg-hover-lighter" to="/admin-schedule"><GrSchedule /> Schedule</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-teams"><GiBasketballJersey /> Teams</Link>
+                                        <Link className="nav-link custom-link text-start bg-hover-lighter" to="/admin-teams"><GiBasketballJersey /> Teams</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-players"><FaUsers /> Players</Link>
+                                        <Link className="nav-link custom-link text-start bg-hover-lighter" to="/admin-players"><FaUsers /> Players</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-standings"><MdOutlineLeaderboard /> Standings</Link>
+                                        <Link className="nav-link custom-link text-start bg-hover-lighter" to="/admin-standings"><MdOutlineLeaderboard /> Standings</Link>
                                     </li>
                                     <li className="nav-item">
-                                        <Link className="nav-link custom-link text-start" to="/admin-leaders"><MdLeaderboard /> Leaders</Link>
+                                        <Link className="nav-link custom-link text-start bg-hover-lighter" to="/admin-leaders"><MdLeaderboard /> Leaders</Link>
                                     </li>
                                 </ul>
                             </Accordion.Body>

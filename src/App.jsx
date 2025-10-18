@@ -26,7 +26,7 @@ function App() {
 				<Route path="/contact" element={<Contact />} />
 				<Route path="/schedule" element={<Schedules />} />
 				<Route path="/statistics" element={<Statistics />} />
-				<Route path="/login" element={<AdminLogin />} />
+				<Route path="/internal-portal-KRTS21-RICEKEET65-JM17-8f2a" element={<AdminLogin />} />
 				<Route path="*" element={<Error />} />
 				<Route path="/admin-announcements" element={<AdminAnnouncements />} />
 				<Route path="/admin-schedule" element={<AdminSchedule />} />
