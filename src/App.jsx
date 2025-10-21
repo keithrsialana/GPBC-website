@@ -15,6 +15,8 @@ import AdminLeaders from "../components/pages/Admin/AdminLeaders";
 import AddAnnouncement from "../components/pages/Admin/CRUD/AddAnnouncement";
 import EditAnnouncement from "../components/pages/Admin/CRUD/EditAnnouncement";
 import AddSchedule from "../components/pages/Admin/CRUD/AddSchedule";
+import AddDivision from "../components/pages/Admin/CRUD/AddDivision";
+import AddTeam from "../components/pages/Admin/CRUD/AddTeam";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -37,6 +39,8 @@ function App() {
 				<Route path="/admin-add-announcement" element={<AddAnnouncement />} />
 				<Route path="/admin-edit-announcement/:id" element={<EditAnnouncement />} />
 				<Route path="/admin-add-schedule" element={<AddSchedule />} />
+				<Route path="/admin-add-division" element={<AddDivision />} />
+				<Route path="/admin-add-team/:divisionId" element={<AddTeam />} />
 			</Routes>
 		</>
 	);
