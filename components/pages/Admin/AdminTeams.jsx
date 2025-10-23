@@ -14,6 +14,7 @@ import { TfiAnnouncement } from "react-icons/tfi";
 import { GrSchedule } from "react-icons/gr";
 import { GiBasketballJersey } from "react-icons/gi";
 import { RiFileAddLine } from "react-icons/ri";
+import { VscGraph } from "react-icons/vsc";
 
 function AdminTeams() {
 
@@ -299,6 +300,13 @@ function AdminTeams() {
 																	</div>
 
 																	<div>
+																		<Link
+																			to={`/admin-add-team-stats/${division.id}/${team.id}`}
+																			title="Add Team Stats"
+																			className="btn btn-outline-success btn-sm me-2"
+																		>
+																			<VscGraph size={18} />
+																		</Link>
 																		<Link
 																			to={`/admin-edit-team/${division.id}/${team.id}`}
 																			title="Edit Team"

@@ -34,14 +34,22 @@ function AdminPlayers() {
 
 				const divisionsData = await Promise.all(
 					divisionsSnapshot.docs.map(async (divisionDoc) => {
-						const teamsSnapshot = await getDocs(
-							collection(db, "divisions", divisionDoc.id, "teams")
-						);
+						const teamsSnapshot = await getDocs(collection(db, "divisions", divisionDoc.id, "teams"));
 
-						const teams = teamsSnapshot.docs.map((doc) => ({
-							id: doc.id,
-							...doc.data(),
-						}));
+						const teams = await Promise.all(
+							teamsSnapshot.docs.map(async (teamDoc) => {
+								const playersSnapshot = await getDocs(
+									collection(db, "divisions", divisionDoc.id, "teams", teamDoc.id, "players")
+								);
+
+								const players = playersSnapshot.docs.map((playerDoc) => ({
+									id: playerDoc.id,
+									...playerDoc.data(),
+								}));
+
+								return { id: teamDoc.id, ...teamDoc.data(), players };
+							})
+						);
 
 						return { id: divisionDoc.id, ...divisionDoc.data(), teams };
 					})
@@ -58,6 +66,46 @@ function AdminPlayers() {
 
 		fetchDivisions();
 	}, []);
+
+	const handleDeletePlayer = async (divisionId, teamId, playerId) => {
+		const confirmDelete = window.confirm("Delete this player?");
+		if (!confirmDelete) return;
+
+		try {
+			const playerRef = doc(db, "divisions", divisionId, "teams", teamId, "players", playerId);
+			const playerDoc = await getDoc(playerRef);
+
+			if (playerDoc.exists()) {
+				const { storagePath } = playerDoc.data();
+				if (storagePath) {
+					const imageRef = ref(storage, storagePath);
+					await deleteObject(imageRef).catch(() => { });
+				}
+				await deleteDoc(playerRef);
+			}
+
+			// Update UI
+			setDivisions((prev) =>
+				prev.map((div) =>
+					div.id === divisionId
+						? {
+							...div,
+							teams: div.teams.map((team) =>
+								team.id === teamId
+									? { ...team, players: team.players.filter((p) => p.id !== playerId) }
+									: team
+							),
+						}
+						: div
+				)
+			);
+
+			alert("Player deleted successfully!");
+		} catch (error) {
+			console.error("Error deleting player:", error);
+			alert("Failed to delete player.");
+		}
+	};
 
 	if (loading) return <p>Loading teams...</p>;
 
@@ -125,75 +173,121 @@ function AdminPlayers() {
 					</div>
 					<div className="col-md-9" style={{ height: "100%" }}>
 						<Card>
-							<Card.Header>
-								<h1>Players</h1>
-							</Card.Header>
-							<Card.Body className="text-start">
-								{/* ✅ Handle loading state */}
-								{loading ? (
-									<p className="text-center text-muted">Loading teams...</p>
-								) : divisions.length === 0 ? (
-									<p className="text-muted text-center">No divisions or teams found</p>
-								) : (
-									<Accordion alwaysOpen flush>
-										{divisions.map((division, index) => (
-											<Accordion.Item eventKey={index.toString()} key={division.id}>
-												<Accordion.Header>🏀 {division.title}</Accordion.Header>
-												<Accordion.Body>
-													<div className="d-flex justify-content-between align-items-center mb-3">
-														<div>
-															<h5 className="">{division.title}</h5>
+							<Card.Header><h1>Players</h1></Card.Header>
+							<Card.Body>
+								{divisions.map((division) => (
+									<div key={division.id} className="mb-4">
+										<h4 className="mb-3">🏀 {division.title}</h4>
+
+										{division.teams.map((team) => (
+											<Accordion key={team.id} className="mb-1">
+												<Accordion.Item eventKey="0">
+													<Accordion.Header>
+														<div className="d-flex align-items-center">
+															{team.imageUrl ? (
+																<img
+																	src={team.imageUrl}
+																	alt={team.name}
+																	style={{
+																		width: "50px",
+																		height: "50px",
+																		objectFit: "cover",
+																		borderRadius: "6px",
+																		marginRight: "10px",
+																	}}
+																/>
+															) : (
+																<div className="no-logo">No Logo</div>
+															)}
+															<strong>{team.name}</strong>
 														</div>
-													</div>
+													</Accordion.Header>
 
-													{/* Teams List */}
-													{division.teams && division.teams.length > 0 ? (
-														<ul className="list-group">
-															{division.teams.map((team) => (
-																<li
-																	key={team.id}
-																	className="list-group-item d-flex justify-content-between align-items-center"
-																	onClick={() => openModal(team)}
-																>
-																	<div className="d-flex align-items-center">
-																		{team.imageUrl && (
-																			<img
-																				src={team.imageUrl}
-																				alt={team.name}
-																				style={{
-																					width: "80px",
-																					height: "80px",
-																					objectFit: "cover",
-																					borderRadius: "6px",
-																					marginRight: "15px",
-																				}}
-																			/>
-																		)}
-																		<span>{team.name}</span>
-																	</div>
+													<Accordion.Body>
+														{/* Players List */}
+														{team.players && team.players.length > 0 ? (
+															<ul className="list-group mb-3">
+																{team.players.map((player) => (
+																	<li
+																		key={player.id}
+																		className="list-group-item d-flex justify-content-between align-items-center"
+																	>
+																		<div className="d-flex align-items-center">
+																			{player.imageUrl ? (
+																				<img
+																					src={player.imageUrl}
+																					alt={player.name}
+																					style={{
+																						width: "50px",
+																						height: "50px",
+																						borderRadius: "6px",
+																						objectFit: "cover",
+																						marginRight: "10px",
+																					}}
+																				/>
+																			) : (
+																				<div
+																					style={{
+																						width: "50px",
+																						height: "50px",
+																						borderRadius: "6px",
+																						backgroundColor: "#eee",
+																						display: "flex",
+																						justifyContent: "center",
+																						alignItems: "center",
+																						marginRight: "10px",
+																						fontSize: "12px",
+																					}}
+																				>
+																					No Img
+																				</div>
+																			)}
+																			<span>{player.name}</span>
+																		</div>
 
-																	<div>
-																		<Link
-																			to={`/admin-edit-team/${division.id}/${team.id}`}
-																			title="Edit Team"
-																			className="btn btn-outline-warning btn-sm me-2"
-																		>
-																			<RiFileAddLine size={18} />
-																		</Link>
-																	</div>
-																</li>
-															))}
-														</ul>
-													) : (
-														<p className="text-muted text-center mt-3">No teams in this division</p>
-													)}
-												</Accordion.Body>
-											</Accordion.Item>
+																		<div>
+																			<button
+																				className="btn btn-outline-success btn-sm me-2"
+																				onClick={() => navigate(`/admin-add-player-stats/${division.id}/${team.id}/${player.id}`)}
+																			>
+																				📊 Stats
+																			</button>
+																			<button
+																				className="btn btn-outline-warning btn-sm me-2"
+																				onClick={() => navigate(`/admin-edit-player/${division.id}/${team.id}/${player.id}`)}
+																			>
+																				✏️
+																			</button>
+																			<button
+																				className="btn btn-outline-danger btn-sm"
+																				onClick={() => handleDeletePlayer(division.id, team.id, player.id)}
+																			>
+																				🗑️
+																			</button>
+																		</div>
+																	</li>
+																))}
+															</ul>
+														) : (
+															<p className="text-muted">No players added</p>
+														)}
+
+														{/* Add Player Button */}
+														<button
+															className="btn btn-outline-primary btn-sm"
+															onClick={() => navigate(`/admin-add-player/${division.id}/${team.id}`)}
+														>
+															➕ Add Player
+														</button>
+													</Accordion.Body>
+												</Accordion.Item>
+											</Accordion>
 										))}
-									</Accordion>
-								)}
+									</div>
+								))}
 							</Card.Body>
 						</Card>
+
 					</div>
 				</div>
 			</div>

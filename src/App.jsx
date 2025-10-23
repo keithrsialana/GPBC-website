@@ -19,6 +19,7 @@ import AddDivision from "../components/pages/Admin/CRUD/AddDivision";
 import EditDivision from "../components/pages/Admin/CRUD/EditDivision";
 import AddTeam from "../components/pages/Admin/CRUD/AddTeam";
 import EditTeam from "../components/pages/Admin/CRUD/EditTeam";
+import AddPlayer from "../components/pages/Admin/CRUD/AddPlayer";
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
 				<Route path="/admin-edit-division/:divisionId" element={<EditDivision />} />
 				<Route path="/admin-add-team/:divisionId" element={<AddTeam />} />
 				<Route path="/admin-edit-team/:divisionId/:teamId" element={<EditTeam />} />
+				<Route path="/admin-add-player/:divisionId/:teamId" element={<AddPlayer />} />
 			</Routes>
 		</>
 	);
