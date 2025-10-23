@@ -66,31 +66,88 @@ function AdminTeams() {
 
 	if (loading) return <p>Loading teams...</p>;
 
-	const handleDelete = async (teamId) => {
+	const handleDeleteDivision = async (divisionId) => {
+		const confirmDelete = window.confirm(
+			"Are you sure you want to delete this division? This will also remove all its teams."
+		);
+		if (!confirmDelete) return;
+
+		try {
+			// Get all teams under this division
+			const teamsRef = collection(db, "divisions", divisionId, "teams");
+			const teamsSnapshot = await getDocs(teamsRef);
+
+			// ✅ Loop through teams and delete each one
+			for (const teamDoc of teamsSnapshot.docs) {
+				const teamData = teamDoc.data();
+
+				// Delete the team document
+				await deleteDoc(doc(db, "divisions", divisionId, "teams", teamDoc.id));
+
+				// If team has an image in storage, delete it
+				if (teamData.storagePath) {
+					const imageRef = ref(storage, teamData.storagePath);
+					await deleteObject(imageRef).catch((err) =>
+						console.log("Error deleting team image:", err)
+					);
+				}
+			}
+
+			// ✅ Finally, delete the division document
+			await deleteDoc(doc(db, "divisions", divisionId));
+
+			// ✅ Update local state to remove deleted division
+			setDivisions((prev) => prev.filter((d) => d.id !== divisionId));
+
+			alert("Division and its teams deleted successfully!");
+		} catch (error) {
+			console.error("Error deleting division:", error);
+			alert("Failed to delete division.");
+		}
+	};
+
+	const handleDeleteTeam = async (divisionId, teamId) => {
 		const confirmDelete = window.confirm("Are you sure you want to delete this team?");
 		if (!confirmDelete) return;
 
 		try {
-			// Find the announcement to get its image URL
-			const team = teams.find(a => a.id === teamId);
+			// Find the team object (so we can remove its image later)
+			const team = divisions
+				.find((d) => d.id === divisionId)
+				?.teams.find((t) => t.id === teamId);
 
-			// Delete the Firestore document
-			await deleteDoc(doc(db, "teams", teamId));
-
-			// If there is an image, delete it from Firebase Storage
-			if (team.imageUrl) {
-				const imageRef = ref(storage, team.imageUrl);
-				// This will work if imageUrl is the full path from storage; otherwise, store the path separately
-				await deleteObject(imageRef).catch(err => console.log("Image delete error:", err));
+			if (!team) {
+				alert("Team not found!");
+				return;
 			}
 
-			// Remove from local state so UI updates immediately
-			setTeams(prev => prev.filter(a => a.id !== teamId));
+			// ✅ Delete Firestore document from subcollection
+			await deleteDoc(doc(db, "divisions", divisionId, "teams", teamId));
+
+			// ✅ If there is an image, delete it from Firebase Storage
+			if (team.storagePath) {
+				const imageRef = ref(storage, team.storagePath);
+				await deleteObject(imageRef).catch((err) =>
+					console.log("Image delete error:", err)
+				);
+			}
+
+			// ✅ Update local state to remove the deleted team
+			setDivisions((prevDivisions) =>
+				prevDivisions.map((division) =>
+					division.id === divisionId
+						? {
+							...division,
+							teams: division.teams.filter((t) => t.id !== teamId),
+						}
+						: division
+				)
+			);
 
 			alert("Team deleted successfully!");
 		} catch (error) {
-			console.error("Error deleting Team:", error);
-			alert("Failed to delete Team.");
+			console.error("Error deleting team:", error);
+			alert("Failed to delete team.");
 		}
 	};
 
@@ -188,27 +245,27 @@ function AdminTeams() {
 												<Accordion.Body>
 													<div className="d-flex justify-content-between align-items-center mb-3">
 														<div>
-															<h5>{division.title}</h5>
+															<h5 className="">{division.title}</h5>
 														</div>
 														<div>
 															<button
 																className="btn btn-outline-success btn-sm me-2"
-																Title="Add Team"
+																title="Add Team"
 																onClick={() => navigate(`/admin-add-team/${division.id}`)}
 															>
 																<RiFileAddLine className="me-2 ms-2" />
 															</button>
 															<button
 																className="btn btn-outline-warning btn-sm me-2"
-																Title="Edit Division"
+																title="Edit Division"
 																onClick={() => navigate(`/admin-edit-division/${division.id}`)}
 															>
 																<MdEditNote size={18} />
 															</button>
 															<button
 																className="btn btn-outline-danger btn-sm"
-																Title="Delete Division"
-																onClick={() => handleDelete(division.id)}
+																title="Delete Division"
+																onClick={() => handleDeleteDivision(division.id)}
 															>
 																<MdDelete size={18} />
 															</button>
@@ -222,7 +279,7 @@ function AdminTeams() {
 																<li
 																	key={team.id}
 																	className="list-group-item d-flex justify-content-between align-items-center"
-																	onClick={openModal}
+																	onClick={() => openModal(team)}
 																>
 																	<div className="d-flex align-items-center">
 																		{team.imageUrl && (
@@ -243,17 +300,19 @@ function AdminTeams() {
 
 																	<div>
 																		<Link
-																			to={`/admin-edit-team/${team.id}`}
-																			Title="Edit Team"
-																			className="btn btn-outline-success btn-sm me-2"
+																			to={`/admin-edit-team/${division.id}/${team.id}`}
+																			title="Edit Team"
+																			className="btn btn-outline-warning btn-sm me-2"
 																		>
 																			<MdEditNote size={18} />
 																		</Link>
 																		<button
 																			className="btn btn-outline-danger btn-sm"
-																			Title="Delete Team"
-																			onClick={() => handleDeleteTeam(division.id, team.id)}
-																		>
+																			title="Delete Team"
+																			onClick={(e) => {
+																				e.stopPropagation();
+																				handleDeleteTeam(division.id, team.id);
+																			}}>
 																			<MdDelete size={18} />
 																		</button>
 																	</div>
@@ -298,7 +357,7 @@ function AdminTeams() {
 					</div>
 				</div>
 			</div>
-		</div>
+		</div >
 	);
 }
 

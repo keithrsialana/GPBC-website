@@ -1,16 +1,65 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { db, storage } from "../../../src/services/firebase";
+import { ref, deleteObject } from "firebase/storage";
+import { collection, getDocs, doc, deleteDoc, query, orderBy } from "firebase/firestore";
 
 import Card from 'react-bootstrap/Card';
-import Nav from 'react-bootstrap/Nav';
 import Accordion from 'react-bootstrap/Accordion';
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 import { FaUsers } from 'react-icons/fa';
 import { MdOutlineLeaderboard, MdLeaderboard } from "react-icons/md";
 import { TfiAnnouncement } from "react-icons/tfi";
 import { GrSchedule } from "react-icons/gr";
 import { GiBasketballJersey } from "react-icons/gi";
+import { RiFileAddLine } from "react-icons/ri";
 
 function AdminPlayers() {
+	const [divisions, setDivisions] = useState([]);
+	const [teams, setTeams] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const navigate = useNavigate();
+
+	// ✅ Fetch all divisions and their teams
+	useEffect(() => {
+		async function fetchDivisions() {
+			try {
+				const divisionsSnapshot = await getDocs(collection(db, "divisions"));
+
+				if (divisionsSnapshot.empty) {
+					setDivisions([]); // Explicitly set to empty if no divisions exist
+					return;
+				}
+
+				const divisionsData = await Promise.all(
+					divisionsSnapshot.docs.map(async (divisionDoc) => {
+						const teamsSnapshot = await getDocs(
+							collection(db, "divisions", divisionDoc.id, "teams")
+						);
+
+						const teams = teamsSnapshot.docs.map((doc) => ({
+							id: doc.id,
+							...doc.data(),
+						}));
+
+						return { id: divisionDoc.id, ...divisionDoc.data(), teams };
+					})
+				);
+
+				setDivisions(divisionsData);
+			} catch (error) {
+				console.error("Error fetching divisions and teams:", error);
+				setDivisions([]); // Prevent infinite loading on error
+			} finally {
+				setLoading(false); // ✅ Always stop loading
+			}
+		}
+
+		fetchDivisions();
+	}, []);
+
+	if (loading) return <p>Loading teams...</p>;
 
 	return (
 		<div className="container-fluid p-0">
@@ -79,8 +128,70 @@ function AdminPlayers() {
 							<Card.Header>
 								<h1>Players</h1>
 							</Card.Header>
-							<Card.Body>
-								
+							<Card.Body className="text-start">
+								{/* ✅ Handle loading state */}
+								{loading ? (
+									<p className="text-center text-muted">Loading teams...</p>
+								) : divisions.length === 0 ? (
+									<p className="text-muted text-center">No divisions or teams found</p>
+								) : (
+									<Accordion alwaysOpen flush>
+										{divisions.map((division, index) => (
+											<Accordion.Item eventKey={index.toString()} key={division.id}>
+												<Accordion.Header>🏀 {division.title}</Accordion.Header>
+												<Accordion.Body>
+													<div className="d-flex justify-content-between align-items-center mb-3">
+														<div>
+															<h5 className="">{division.title}</h5>
+														</div>
+													</div>
+
+													{/* Teams List */}
+													{division.teams && division.teams.length > 0 ? (
+														<ul className="list-group">
+															{division.teams.map((team) => (
+																<li
+																	key={team.id}
+																	className="list-group-item d-flex justify-content-between align-items-center"
+																	onClick={() => openModal(team)}
+																>
+																	<div className="d-flex align-items-center">
+																		{team.imageUrl && (
+																			<img
+																				src={team.imageUrl}
+																				alt={team.name}
+																				style={{
+																					width: "80px",
+																					height: "80px",
+																					objectFit: "cover",
+																					borderRadius: "6px",
+																					marginRight: "15px",
+																				}}
+																			/>
+																		)}
+																		<span>{team.name}</span>
+																	</div>
+
+																	<div>
+																		<Link
+																			to={`/admin-edit-team/${division.id}/${team.id}`}
+																			title="Edit Team"
+																			className="btn btn-outline-warning btn-sm me-2"
+																		>
+																			<RiFileAddLine size={18} />
+																		</Link>
+																	</div>
+																</li>
+															))}
+														</ul>
+													) : (
+														<p className="text-muted text-center mt-3">No teams in this division</p>
+													)}
+												</Accordion.Body>
+											</Accordion.Item>
+										))}
+									</Accordion>
+								)}
 							</Card.Body>
 						</Card>
 					</div>
