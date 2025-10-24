@@ -9,11 +9,12 @@ import Accordion from 'react-bootstrap/Accordion';
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { FaUsers } from 'react-icons/fa';
-import { MdOutlineLeaderboard, MdLeaderboard } from "react-icons/md";
+import { MdOutlineLeaderboard, MdLeaderboard, MdDelete, MdEditNote } from "react-icons/md";
 import { TfiAnnouncement } from "react-icons/tfi";
 import { GrSchedule } from "react-icons/gr";
 import { GiBasketballJersey } from "react-icons/gi";
 import { RiFileAddLine } from "react-icons/ri";
+import { VscGraph } from "react-icons/vsc";
 
 function AdminPlayers() {
 	const [divisions, setDivisions] = useState([]);
@@ -204,6 +205,17 @@ function AdminPlayers() {
 													</Accordion.Header>
 
 													<Accordion.Body>
+														{/* Add Player Button */}
+														<div className="d-flex justify-content-start mb-2">
+															<button
+																className="btn btn-outline-success btn-sm"
+																title="Add Player to Team"
+																onClick={() => navigate(`/admin-add-player/${division.id}/${team.id}`)}
+															>
+																<RiFileAddLine className="me-2 ms-2" /> Add Player
+															</button>
+														</div>
+
 														{/* Players List */}
 														{team.players && team.players.length > 0 ? (
 															<ul className="list-group mb-3">
@@ -212,57 +224,74 @@ function AdminPlayers() {
 																		key={player.id}
 																		className="list-group-item d-flex justify-content-between align-items-center"
 																	>
+																		{/* Player Info Section */}
 																		<div className="d-flex align-items-center">
 																			{player.imageUrl ? (
 																				<img
 																					src={player.imageUrl}
 																					alt={player.name}
 																					style={{
-																						width: "50px",
-																						height: "50px",
-																						borderRadius: "6px",
+																						width: "55px",
+																						height: "55px",
+																						borderRadius: "50%",
 																						objectFit: "cover",
-																						marginRight: "10px",
+																						marginRight: "12px",
+																						border: "2px solid #eee",
 																					}}
 																				/>
 																			) : (
 																				<div
 																					style={{
-																						width: "50px",
-																						height: "50px",
-																						borderRadius: "6px",
+																						width: "55px",
+																						height: "55px",
+																						borderRadius: "50%",
 																						backgroundColor: "#eee",
 																						display: "flex",
 																						justifyContent: "center",
 																						alignItems: "center",
-																						marginRight: "10px",
+																						marginRight: "12px",
 																						fontSize: "12px",
 																					}}
 																				>
 																					No Img
 																				</div>
 																			)}
-																			<span>{player.name}</span>
+
+																			{/* Player Details */}
+																			<div>
+																				<strong>{player.name}</strong>
+																				<div className="text-muted" style={{ fontSize: "0.85rem" }}>
+																					#️⃣ Jersey: #{player.jerseyNumber || "N/A"} <br />
+																					🎂 Age: {player.age || "N/A"}y/o | 📏 {player.height ? `${player.height} ` : "Height N/A"}
+																				</div>
+																			</div>
 																		</div>
 
+																		{/* Admin Buttons */}
 																		<div>
 																			<button
 																				className="btn btn-outline-success btn-sm me-2"
-																				onClick={() => navigate(`/admin-add-player-stats/${division.id}/${team.id}/${player.id}`)}
+																				title="Add Player Stats"
+																				onClick={() =>
+																					navigate(`/admin-add-player-stats/${division.id}/${team.id}/${player.id}`)
+																				}
 																			>
-																				📊 Stats
-																			</button>
+																				<VscGraph size={18} />																			</button>
 																			<button
 																				className="btn btn-outline-warning btn-sm me-2"
-																				onClick={() => navigate(`/admin-edit-player/${division.id}/${team.id}/${player.id}`)}
+																				title="Edit Player"
+																				onClick={() =>
+																					navigate(`/admin-edit-player/${division.id}/${team.id}/${player.id}`)
+																				}
 																			>
-																				✏️
+																				<MdEditNote size={18} />
 																			</button>
 																			<button
 																				className="btn btn-outline-danger btn-sm"
+																				title="Delete Player"
 																				onClick={() => handleDeletePlayer(division.id, team.id, player.id)}
 																			>
-																				🗑️
+																				<MdDelete size={18} />
 																			</button>
 																		</div>
 																	</li>
@@ -271,14 +300,6 @@ function AdminPlayers() {
 														) : (
 															<p className="text-muted">No players added</p>
 														)}
-
-														{/* Add Player Button */}
-														<button
-															className="btn btn-outline-primary btn-sm"
-															onClick={() => navigate(`/admin-add-player/${division.id}/${team.id}`)}
-														>
-															➕ Add Player
-														</button>
 													</Accordion.Body>
 												</Accordion.Item>
 											</Accordion>
@@ -291,7 +312,7 @@ function AdminPlayers() {
 					</div>
 				</div>
 			</div>
-		</div>
+		</div >
 	);
 }
 
