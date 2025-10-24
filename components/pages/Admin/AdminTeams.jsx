@@ -29,25 +29,43 @@ function AdminTeams() {
 
 	// ✅ Fetch all divisions and their teams
 	useEffect(() => {
-		async function fetchDivisions() {
+		const fetchDivisions = async () => {
 			try {
 				const divisionsSnapshot = await getDocs(collection(db, "divisions"));
 
-				if (divisionsSnapshot.empty) {
-					setDivisions([]); // Explicitly set to empty if no divisions exist
-					return;
-				}
-
 				const divisionsData = await Promise.all(
 					divisionsSnapshot.docs.map(async (divisionDoc) => {
-						const teamsSnapshot = await getDocs(
-							collection(db, "divisions", divisionDoc.id, "teams")
-						);
+						const teamsSnapshot = await getDocs(collection(db, "divisions", divisionDoc.id, "teams"));
 
-						const teams = teamsSnapshot.docs.map((doc) => ({
-							id: doc.id,
-							...doc.data(),
-						}));
+						const teams = await Promise.all(
+							teamsSnapshot.docs.map(async (teamDoc) => {
+								// Fetch team stats
+								const statsSnapshot = await getDocs(
+									collection(db, "divisions", divisionDoc.id, "teams", teamDoc.id, "stats")
+								);
+
+								let avgStats = { points: "N/A", rebounds: "N/A", assists: "N/A" };
+								const stats = statsSnapshot.docs.map((s) => s.data());
+								if (stats.length > 0) {
+									const total = stats.reduce(
+										(acc, s) => ({
+											points: acc.points + (s.points || 0),
+											rebounds: acc.rebounds + (s.rebounds || 0),
+											assists: acc.assists + (s.assists || 0),
+										}),
+										{ points: 0, rebounds: 0, assists: 0 }
+									);
+
+									avgStats = {
+										points: (total.points / stats.length).toFixed(1),
+										rebounds: (total.rebounds / stats.length).toFixed(1),
+										assists: (total.assists / stats.length).toFixed(1),
+									};
+								}
+
+								return { id: teamDoc.id, ...teamDoc.data(), avgStats };
+							})
+						);
 
 						return { id: divisionDoc.id, ...divisionDoc.data(), teams };
 					})
@@ -55,13 +73,11 @@ function AdminTeams() {
 
 				setDivisions(divisionsData);
 			} catch (error) {
-				console.error("Error fetching divisions and teams:", error);
-				setDivisions([]); // Prevent infinite loading on error
+				console.error("Error fetching divisions/teams:", error);
 			} finally {
-				setLoading(false); // ✅ Always stop loading
+				setLoading(false);
 			}
-		}
-
+		};
 		fetchDivisions();
 	}, []);
 
@@ -280,10 +296,11 @@ function AdminTeams() {
 																<li
 																	key={team.id}
 																	className="list-group-item d-flex justify-content-between align-items-center"
-																	onClick={() => openModal(team)}
+																	style={{ padding: "15px", borderRadius: "8px" }}
 																>
+																	{/* Left: Logo + Team Info */}
 																	<div className="d-flex align-items-center">
-																		{team.imageUrl && (
+																		{team.imageUrl ? (
 																			<img
 																				src={team.imageUrl}
 																				alt={team.name}
@@ -295,22 +312,49 @@ function AdminTeams() {
 																					marginRight: "15px",
 																				}}
 																			/>
+																		) : (
+																			<div
+																				style={{
+																					width: "80px",
+																					height: "80px",
+																					borderRadius: "6px",
+																					backgroundColor: "#eee",
+																					display: "flex",
+																					justifyContent: "center",
+																					alignItems: "center",
+																					marginRight: "15px",
+																					fontSize: "12px",
+																					color: "#666",
+																				}}
+																			>
+																				No Logo
+																			</div>
 																		)}
-																		<span>{team.name}</span>
+
+																		{/* Team Name + Stats */}
+																		<div>
+																			<h5 className="mb-1">{team.name}</h5>
+																			<p className="mb-0 text-muted" style={{ fontSize: "14px" }}>
+																				<strong>Avg Points:</strong> {team.avgStats?.points || "N/A"} &nbsp;|&nbsp;
+																				<strong>Reb:</strong> {team.avgStats?.rebounds || "N/A"} &nbsp;|&nbsp;
+																				<strong>Ast:</strong> {team.avgStats?.assists || "N/A"}
+																			</p>
+																		</div>
 																	</div>
 
+																	{/* Right: Action Buttons */}
 																	<div>
 																		<Link
 																			to={`/admin-add-team-stats/${division.id}/${team.id}`}
-																			title="Add Team Stats"
 																			className="btn btn-outline-success btn-sm me-2"
+																			title="Add Stats"
 																		>
 																			<VscGraph size={18} />
 																		</Link>
 																		<Link
 																			to={`/admin-edit-team/${division.id}/${team.id}`}
-																			title="Edit Team"
 																			className="btn btn-outline-warning btn-sm me-2"
+																			title="Edit Team"
 																		>
 																			<MdEditNote size={18} />
 																		</Link>
@@ -320,7 +364,8 @@ function AdminTeams() {
 																			onClick={(e) => {
 																				e.stopPropagation();
 																				handleDeleteTeam(division.id, team.id);
-																			}}>
+																			}}
+																		>
 																			<MdDelete size={18} />
 																		</button>
 																	</div>
